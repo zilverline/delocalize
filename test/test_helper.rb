@@ -10,6 +10,7 @@ require 'minitest/spec'
 require 'mocha/setup'
 
 require 'rails'
+require 'action_controller'
 
 de = {
   :date => {

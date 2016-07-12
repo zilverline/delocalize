@@ -1,3 +1,5 @@
+PARAMETER_CLASS = ActionController::Parameters rescue Delocalize::Parameters
+
 module Delocalize
   module ParameterDelocalizing
     def delocalize(options)
@@ -11,7 +13,7 @@ module Delocalize
         key_stack = [*base_key_stack, key] # don't modify original key stack!
 
         hash[key] = case value
-                    when Hash
+                    when PARAMETER_CLASS, Hash
                       delocalize_hash(value, options, key_stack)
                     when Array
                       key_stack += [:[]] # pseudo-key to denote arrays
