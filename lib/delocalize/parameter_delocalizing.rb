@@ -3,25 +3,29 @@ PARAMETER_CLASS = ActionController::Parameters rescue Delocalize::Parameters
 module Delocalize
   module ParameterDelocalizing
     def delocalize(options)
-      delocalize_hash(self, options)
+      delocalize_parameters(self.dup, options)
     end
 
   private
 
-    def delocalize_hash(hash, options, base_key_stack = [])
-      hash.each do |key, value|
+    def delocalize_parameters(parameters, options, base_key_stack = [])
+      parameters.each do |key, value|
         key_stack = [*base_key_stack, key] # don't modify original key stack!
 
-        hash[key] = case value
+        parameters[key] = case value
                     when PARAMETER_CLASS, Hash
-                      delocalize_hash(value, options, key_stack)
+                      delocalize_parameters(value, options, key_stack)
                     when Array
                       key_stack += [:[]] # pseudo-key to denote arrays
                       value.map { |item| delocalize_parse(options, key_stack, item) }
                     else
                       delocalize_parse(options, key_stack, value)
                     end
+
+
       end
+
+      parameters
     end
 
     def delocalize_parse(options, key_stack, value)
